@@ -24,9 +24,13 @@ sentiment_analyzer = SentimentIntensityAnalyzer()
 
 def fetch_sentiment(date):
     query = 'Bitcoin'
-    tweets = tweepy.Cursor(api.search_tweets, q=query, lang='en', since=date, until=date).items(100)
-    sentiment_scores = [sentiment_analyzer.polarity_scores(tweet.text)['compound'] for tweet in tweets]
-    return sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
+    try:
+        tweets = tweepy.Cursor(api.search_tweets, q=query, lang='en', since=date, until=date).items(100)
+        sentiment_scores = [sentiment_analyzer.polarity_scores(tweet.text)['compound'] for tweet in tweets]
+        return sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
+    except Exception as e:
+        print(f"Error fetching sentiment data: {e}")
+        return 0
 
 # Fetch Bitcoin data
 start_date = '2018-01-01'
